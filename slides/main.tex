@@ -9,6 +9,9 @@
 \usepackage[russian]{babel}
 \usepackage{amssymb,amsmath}
 \usepackage[style=authortitle,backend=bibtex]{biblatex}
+\usepackage{caption}
+\captionsetup[figure]{labelformat=empty}%
+\captionsetup[table]{labelformat=empty}%
 \usefonttheme[onlymath]{serif}
 \usetheme{Madrid}
 
@@ -22,8 +25,8 @@
 \setbeamersize{text margin left=1.5em, text margin right=1.5em}
 
 
-\title[Локальные модели]{Исследование локальных моделей в анализе сигналов головного мозга}
-\author[Филатов А.В.]{Филатов А.В, Маркин В.О, Стрижов В.В.}
+\title[Локальные модели]{Построение  локальных моделей в задачах анализа сигналов головного мозга}
+\author[Филатов А.В.]{Филатов А.В \\ Консультант: Маркин В.О\\ Эксперт: Стрижов В.В.}
 \institute[МФТИ]{Московский физико-технический институт\\
 	Факультет управления и прикладной математики\\
 	Кафедра интеллектуальных систем\\}
@@ -33,7 +36,7 @@
 \maketitle
 \begin{frame}{Цель работы}
 \begin{block}{Задача}
-Восстановление траектории движения руки на основе электрических сигналов головного мозга
+Восстановление траектории движения руки на основе электрических сигналов головного мозга.
 \end{block}
 \begin{block}{Проблема}
 Избыточность и коррелированность исходного признакового пространства.
@@ -42,17 +45,32 @@
 Построение локальной модели с учетом пространственной структуры сигнала. Получение при помощи локальной модели нового признакового описания.
 \end{block}
 \end{frame}
+\begin{frame}{Локальная модель}
+\begin{block}{Определение}
+	Локальная модель --- совокупность двух параметрических отображений: $\varphi$ и $\tilde{\varphi}$:
+	\[
+	\phi: \mathbb{R}^{n \times k_1} \rightarrow \mathbb{R}^{n \times k_2},
+	\]
+	\[
+	\tilde{\phi}: \mathbb{R}^{n \times k_2} \rightarrow \mathbb{R}^{n \times k_1},
+	\]
+	\[
+	\tilde{\varphi}^*, \phi^* = \argmin_{\tilde{\phi}, \phi} \|\mathbf{X} - \tilde{\phi} \circ \phi (\mathbf{X}) \|_2,
+	\]	 
+	где 
+	$\phi$ отображает исходное признаковое пространство в скрытое пространство меньшей размерности, а $\tilde{\phi}$ отображает скрытое пространство  в исходное признаковое пространство.
+\end{block}
+\end{frame}
 
-\begin{frame}{Постановка}
+\begin{frame}{Прогнозирование траектории конечности}
 \begin{figure}
 	\includegraphics[width=0.7\linewidth]{figs/task.png}
-	\caption{Изображение задачи}
 \end{figure}
 \begin{block}{Задача}
 Данные  представляют собой временной ряд амплитуд сигналов $\mathbf{X}(t)  \in \mathbb{R}^{m}$. По ним требуется предсказать положение запястья в следующим момент времени $\mathbf{y}(t+1) \in \mathbb{R}^3$.
 \end{block}
 \end{frame}
-\begin{frame}{Решение}
+\begin{frame}{Декомпозиция решения}
 \begin{figure}
 	\includegraphics[width=0.85\textwidth]{figs/algo.pdf}
 	\caption{Функциональная схема решения}
@@ -64,37 +82,21 @@
 \[
 g^* =  f \circ \psi \circ \phi,
 \]
-где $\phi$ --- локальная модель, а $f$ --- решение задачи регрессии методом частичных квадратов, а $\psi$ --- вейвлет преобразование.
+где $\phi$ --- локальная модель, а $f$ --- линейная модель, а $\psi$ --- вейвлет преобразование.
 \end{block}
 \end{frame}
 
-\begin{frame}{Локальная модель}
-\begin{block}{Определение}
-	Локальная модель --- совокупность двух параметрических отображений: $\varphi$ и $\tilde{\varphi}$:
-	\[
-	\phi: \mathbb{R}^{n \times k_1} \rightarrow \mathbb{R}^{n \times k_2}
-	\]
-	\[
-	\tilde{\phi}: \mathbb{R}^{n \times k_2} \rightarrow \mathbb{R}^{n \times k_1}
-	\]
-	\[
-	\tilde{\varphi}^*, \phi^* = \argmin_{\tilde{\phi}, \phi} \|\mathbf{X} - \tilde{\phi} \circ \phi (\mathbf{X}) \|_2,
-	\]	 
-	где 
-	$\phi$ отображает исходное признаковое пространство в скрытое пространство, а $\tilde{\phi}$ отображает скрытое пространство меньшей размерности в исходное признаковое пространство.
-\end{block}
-\end{frame}
 \begin{frame}{Вейвлет преобразование}
 \begin{figure}
 	\includegraphics[width=0.6\linewidth]{figs/morl.eps}
 	\caption{Вейвлет типа Morlet}
 \end{figure}
 \begin{block}{Определение}
-	Вейвлет-преобразование --- интегральное преобразование, которое представляет собой свертку вейвлет-функции $\gamma(t)$ с сигналом $\Theta(t)$.
+	Вейвлет-преобразование --- интегральное преобразование, которое представляет собой свертку вейвлет-функции $\gamma(t)$ с сигналом $\mathbf{\Theta(t)}$.
 	
 В случае дискретных наборов преобразование имеет вид $\{\tau_1 \ldots \tau_N\}, \{s_1 \ldots s_M \}$:
 \[
-\Psi_{nm} = \int \limits _{{-\infty }}^{{+\infty }}\Theta(t){\frac  {1}{{\sqrt  {s_m}}}}\gamma ^{{*}}\left({\frac  {t-\tau_n }{s_m}}\right)dt,	
+\mathbf{\Psi}_{nm} = \int \limits _{{-\infty }}^{{+\infty }}\mathbf{\Theta}(t){\frac  {1}{{\sqrt  {s_m}}}}\gamma ^{{*}}\left({\frac  {t-\tau_n }{s_m}}\right)dt,	
 \]
 \end{block}
 \end{frame}
@@ -104,7 +106,7 @@ g^* =  f \circ \psi \circ \phi,
 	\caption{Схема метода частичных квадратов}
 \end{figure}
 \begin{block}{Описание}
-	Метод частичных квадратов проецирует матрицу плана $\mathbf{\psi}$ и целевую матрицу $\mathbf{Y}$ в скрытое пространство малой размерностью, максимизируя линейную зависимость между столбцами матриц $\mathbf{T}, \mathbf{U}$, которые лучше всего описывают оригинальные матрицы $\mathbf{\Psi}$ и $\mathbf{Y}$.
+	Метод частичных квадратов проецирует матрицу плана $\mathbf{\Psi}$ и целевую матрицу $\mathbf{Y}$ в скрытое пространство малой размерностью, максимизируя линейную зависимость между столбцами матриц $\mathbf{T}, \mathbf{U}$, минимизируя нормы $\|\mathbf{\Psi} - \mathbf{T}\mathbf{P}^T\|_2$ и $\|\mathbf{Y} - \mathbf{U}\mathbf{Q}^T\|_2$.
 	\begin{equation*}
 	\begin{split}
 	\underset{m\times n
@@ -131,12 +133,12 @@ g^* =  f \circ \psi \circ \phi,
 \end{frame}
 \begin{frame}{Эксперимент}
 \begin{figure}
-	\includegraphics[width=0.65\textwidth]{figs/pre.eps}
+	\includegraphics[height=0.3\textheight]{figs/pre.eps}
 	\caption{Зависимость истинной и предсказанной траекторий}
 \end{figure}
 \begin{itemize}
-	\item Данные для эксперимента взяты с проекта \href{http://neurotycho.org/epidural-ecog-food-tracking-task}{Neurotycho.org}\footnote[2]{\textit{Zenas C Chao, Yasuo Nagasaka, Naotaka Fujii}} 
-	\item Данные были уменьшены в 10 раз и разбиты на обучение и тест в отношении 70/30\%
+	\item Данные для эксперимента: \href{http://neurotycho.org/epidural-ecog-food-tracking-task}{Neurotycho.org}\footnote[2]{\textit{Zenas C Chao, Yasuo Nagasaka, Naotaka Fujii}} 
+	\item Данные были прорежены в 10 раз и разбиты на обучение и тест в отношении 70/30\%
 	\item Локальная модель строилась на полиномах 3 степени
 	\item Вейвлет преобразование имело тип Morlet и строилось на 10 частотах от 10 до 150 Гц
 	\item Метрика: корреляция Пирсона между предсказанной и истинной траекторией.
@@ -161,7 +163,7 @@ g^* =  f \circ \psi \circ \phi,
 \begin{itemize}
 	\item Исследован метод, учитывающий пространственную структуру сигнала
 	\item Разработанный подход понижает размерность задачи в 2-3 раза
-	\item Проведен вычислительный эксперимент, доказывающий эффективность предложенного решения
+	\item Проведен вычислительный эксперимент, доказывающий эффективность предложенного решения c точки зрения критерия качества. 
 \end{itemize}
 \end{frame}
 \begin{frame}{Дальнейшие исследования}
